@@ -1,19 +1,18 @@
-const A = require('arcsecond');
+const str = s => targetString => {
+    if(targetString.startsWith(s)) {
+        // Success!
+        return s;
+    }
+    throw new Error(`Tried to match ${s}, but got ${targetString.slice(0, 10)}`);
+}
 
-const tag = type => value => ({type, value});
+const run = (parser, targetString) => {
+    return parser(targetString);
+}
 
-const subParser = A.sequenceOf([
-    A.letters,
-    A.digits,
-]).map(tag('letterDigits'));
+// and how we use it
+const parser = str('hello there!');
 
-const stringParser = A.sequenceOf([
-        subParser,
-
-        A.str('hello').map(tag('string')),
-        A.many(A.char(' ')).map(tag('whitespace')),
-        A.str('world').map(tag('string')),
-        A.endOfInput.map(tag('endOfInput')),
-    ]).map(tag('ourTree'));
-
-console.log(stringParser.run('asdsadsadads123hello                 world').result);
+console.log(
+    run(parser, 'hello there!')
+)
